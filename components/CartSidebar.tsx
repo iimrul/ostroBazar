@@ -82,7 +82,7 @@ const CartSidebar: React.FC = () => {
                                 type="text" 
                                 value={item.quantity} 
                                 readOnly 
-                                className="w-8 text-center text-sm border-x border-gray-300 py-1"
+                                className="w-8 text-center text-sm border-x text-black border-gray-300 py-1"
                             />
                             <button 
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
