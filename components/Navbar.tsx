@@ -5,6 +5,24 @@ interface NavbarProps {
   onSearch: (query: string) => void;
 }
 
+// --- CUSTOM ANIMATED LINK COMPONENT (RED EDITION) ---
+const AnimatedLink = ({ href, text, onClick }: { href: string; text: string; onClick: (e: React.MouseEvent) => void }) => (
+  <a 
+    href={href} 
+    onClick={onClick} 
+    className="relative group py-2 px-1 block cursor-pointer"
+  >
+    {/* The Text - Turns RED on hover now */}
+    <span className="font-orbitron font-bold tracking-widest text-gray-300 group-hover:text-red-500 transition-colors duration-300 uppercase text-sm">
+      {text}
+    </span>
+    
+    {/* The "Crimson Laser" Animation Line */}
+    {/* Gradient is now deep red to bright red tip. Glow is intense red. */}
+    <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-transparent via-red-900 to-red-500 group-hover:w-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(239,68,68,0.9)]"></span>
+  </a>
+);
+
 const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
   const { cart, setIsOpen } = useCart();
   const [scrolled, setScrolled] = useState(false);
@@ -28,11 +46,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     return () => clearTimeout(timer);
   }, [cartCount]);
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  const scrollToSection = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     
-    // Handle Home specifically or just scroll to top
     if (id === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -40,7 +57,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
     const element = document.getElementById(id);
     if (element) {
-      // Offset for fixed header (approx 80px)
       const headerOffset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - headerOffset;
@@ -65,7 +81,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             className="group flex items-center cursor-pointer"
           >
             <span className="text-white group-hover:text-primary transition-colors duration-300">Ostro</span> 
-            {/* The break line separator */}
             <span className="mx-2 text-black font-light opacity-50">|</span> 
             <span className="text-primary group-hover:text-white transition-colors duration-300">Bazar</span>
           </a>
@@ -76,13 +91,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
           <ul className="flex space-x-8">
             {navLinks.map((item) => (
               <li key={item}>
-                <a 
-                  href={`#${item.toLowerCase()}`} 
-                  onClick={(e) => scrollToSection(e, item.toLowerCase())}
-                  className="text-white hover:text-primary font-medium text-sm uppercase tracking-wide transition-colors"
-                >
-                  {item}
-                </a>
+                <AnimatedLink 
+                    href={`#${item.toLowerCase()}`}
+                    text={item}
+                    onClick={(e) => scrollToSection(e, item.toLowerCase())}
+                />
               </li>
             ))}
           </ul>
@@ -94,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             <input 
               type="text" 
               placeholder="Search..." 
-              className="bg-gray-900 border border-gray-700 text-white rounded-l px-3 py-1 focus:outline-none focus:border-primary w-40 text-sm"
+              className="bg-gray-900 border border-gray-700 text-white rounded-l px-3 py-1 focus:outline-none focus:border-primary w-40 text-sm font-sans"
               onChange={(e) => onSearch(e.target.value)}
             />
             <button className="bg-primary hover:bg-primary-dark text-white px-3 py-1 rounded-r transition-colors">
@@ -129,7 +142,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
               <li key={item}>
                 <a 
                   href={`#${item.toLowerCase()}`} 
-                  className="block text-white hover:text-primary font-medium uppercase tracking-wide"
+                  className="block text-white hover:text-primary font-medium uppercase tracking-wide font-orbitron"
                   onClick={(e) => scrollToSection(e, item.toLowerCase())}
                 >
                   {item}
