@@ -13,7 +13,8 @@ const CartSidebar: React.FC = () => {
     shipping, 
     total,
     applyDiscount,
-    discount
+    discount,
+    clearCart
   } = useCart();
 
   const [discountCode, setDiscountCode] = useState('');
@@ -26,6 +27,12 @@ const CartSidebar: React.FC = () => {
         type: result.success ? 'success' : 'error',
         text: result.message
     });
+  };
+
+  const handleCheckout = () => {
+    alert("Thanks For Buying From BIn Laden Store");
+    clearCart();
+    setIsOpen(false);
   };
 
   return (
@@ -82,7 +89,7 @@ const CartSidebar: React.FC = () => {
                                 type="text" 
                                 value={item.quantity} 
                                 readOnly 
-                                className="w-8 text-center text-sm border-x text-black border-gray-300 py-1"
+                                className="w-8 text-center text-black text-sm border-x border-gray-300 py-1"
                             />
                             <button 
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
@@ -153,7 +160,7 @@ const CartSidebar: React.FC = () => {
 
             <button 
                 className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded shadow-lg transition-transform hover:-translate-y-1 mt-2"
-                onClick={() => alert("Proceeding to checkout logic...")}
+                onClick={handleCheckout}
             >
                 Proceed to Checkout
             </button>

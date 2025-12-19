@@ -75,6 +75,40 @@ const upload = multer({
 // --- API ROUTER ---
 const apiRouter = express.Router();
 
+// ==========================================
+// NEW ROUTE: ADMIN LOGIN
+// ==========================================
+apiRouter.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password required' });
+    }
+
+    try {
+        // Query the 'admins' table
+        const [rows] = await promisePool.execute(
+            'SELECT * FROM admins WHERE email = ? AND password = ?', 
+            [email, password]
+        );
+
+        if (rows.length > 0) {
+            // Success
+            res.json({ 
+                success: true, 
+                message: 'Login successful', 
+                admin: { email: rows[0].email, role: rows[0].role } 
+            });
+        } else {
+            // Failure
+            res.status(401).json({ error: 'Invalid email or password' });
+        }
+    } catch (error) {
+        console.error('Login Error:', error);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
 // 0. POST /api/upload
 apiRouter.post('/upload', upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -101,7 +135,6 @@ apiRouter.get('/products', async (req, res) => {
         
         const [rows] = await promisePool.execute(query, params);
         
-        // Format numbers specifically to avoid 'toFixed' errors on frontend
         const formatted = rows.map(row => ({
             ...row,
             price: parseFloat(row.price),
@@ -141,7 +174,7 @@ apiRouter.get('/products/:id', async (req, res) => {
     }
 });
 
-// 3. POST /api/products (MERGED: Includes clearance_id)
+// 3. POST /api/products
 apiRouter.post('/products', async (req, res) => {
     const { title, price, original_price, category_id, thumbnail, stock, rating, description, clearance_id } = req.body;
 
@@ -167,7 +200,7 @@ apiRouter.post('/products', async (req, res) => {
     }
 });
 
-// 4. PUT /api/products/:id (MERGED: Includes clearance_id)
+// 4. PUT /api/products/:id
 apiRouter.put('/products/:id', async (req, res) => {
     const productId = req.params.id;
     const { title, price, original_price, category_id, thumbnail, stock, description, clearance_id } = req.body;

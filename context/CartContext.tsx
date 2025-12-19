@@ -13,6 +13,7 @@ interface CartContextType {
   total: number;
   applyDiscount: (code: string) => { success: boolean; message: string; amount?: number };
   discount: number;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -81,6 +82,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   };
 
+  const clearCart = () => {
+    setCart([]);
+    setDiscountRate(0);
+  };
+
   const applyDiscount = (code: string) => {
     const rate = DISCOUNT_CODES[code.toUpperCase()];
     if (rate) {
@@ -109,7 +115,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         shipping,
         total,
         applyDiscount,
-        discount: discountAmount
+        discount: discountAmount,
+        clearCart
       }}
     >
       {children}
