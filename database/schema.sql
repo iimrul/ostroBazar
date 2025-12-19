@@ -11,7 +11,6 @@ USE ostro_bazar;
 
 -- 1. CLEANUP (Reset tables to avoid errors during re-initialization)
 SET FOREIGN_KEY_CHECKS = 0; -- Disable foreign key checks to allow dropping
-DROP TABLE IF EXISTS compatibility;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS clearance_levels;
@@ -53,14 +52,6 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     FOREIGN KEY (clearance_id) REFERENCES clearance_levels(id)
-);
-
-CREATE TABLE compatibility (
-    item_id INT,
-    platform_id INT,
-    PRIMARY KEY (item_id, platform_id),
-    FOREIGN KEY (item_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (platform_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
 -- 3. SEED DATA (The Initial Content)
